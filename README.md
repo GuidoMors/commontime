@@ -35,4 +35,4 @@ Deploying this frontend does not deploy the Worker or migrate data; see the back
 
 ## Accounts
 
-Signup requires only a username and password. A one-time recovery key is displayed after signup; save it securely because it is needed to reset a forgotten password and cannot be retrieved later. Existing accounts need a recovery key supplied by the administrator; existing Argon2 accounts can also change to a Worker-compatible password from a preserved session.
+Signup requires only a username and a 6–128 character password. A one-time recovery key is displayed after signup; save it securely because it is needed to reset a forgotten password and cannot be retrieved later. Existing accounts need a recovery key supplied by the administrator; existing Argon2 accounts can also change to a Worker-compatible password from a preserved session.
