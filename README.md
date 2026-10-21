@@ -1,33 +1,38 @@
-# Availability Planner Client
+# Availability Planner client
 
-This folder contains the React, TypeScript, and Vite frontend. It requires the Express API in the sibling `availability-planner` repository; the client does not connect directly to SQLite.
+This repository contains the React, TypeScript, and Vite frontend. The API runs as a Cloudflare Worker and stores data in Cloudflare D1; the frontend does not connect directly to D1.
 
 ## Run locally
 
-1. Start the API from the backend repository using its README instructions. It listens on `http://localhost:4000`.
-2. From this folder, install dependencies and start Vite:
+1. From the backend repository, follow its README to install dependencies, configure `server/.dev.vars`, and apply the local D1 migration.
+2. Start the API from the backend repository:
+   ```bash
+   npm run dev
+   ```
+   Wrangler serves it at `http://localhost:8787`.
+3. In this repository, install dependencies and start Vite:
    ```bash
    npm install
    npm run dev
    ```
-3. Open the local URL printed by Vite (normally `http://localhost:5173`).
+4. Open `http://localhost:5173`.
 
-Leave `VITE_API_BASE_URL` unset for local development. Vite proxies `/api` requests to `http://localhost:4000`. The optional `.env.example` is a reference; you do not need to copy it to `.env` for local development.
+Leave `VITE_API_BASE_URL` unset for local development. Vite proxies `/api` requests to the local Worker. For a deployed Pages site, set `VITE_API_BASE_URL` to the Worker HTTPS origin, with no trailing slash or `/api` suffix.
 
 ## Deploy to Cloudflare Pages
 
-Connect this folder to a Pages project. Configure:
+Connect this repository to Cloudflare Pages and configure:
 
 - **Framework preset:** Vite
 - **Build command:** `npm run build`
 - **Build output directory:** `dist`
-- **Root directory:** the repository root if this folder is its own repository; if the backend and client are in one monorepo, set this to `commontime`.
-- **Environment variable:** `VITE_API_BASE_URL` = the public HTTPS origin of the deployed Express API, without a trailing slash or `/api` suffix (for example, `https://your-api.example.com`).
+- **Root directory:** repository root
+- **Environment variable:** `VITE_API_BASE_URL` = the deployed Worker URL, such as `https://availability-planner-api.<account>.workers.dev`
 
-The API must be deployed separately on a Node.js host. Configure its `APP_URL` and `CORS_ORIGINS` to the exact Pages site origin. Credentialed cross-origin sessions require HTTPS and `SESSION_COOKIE_SAME_SITE=none` with `SESSION_COOKIE_SECURE=true`. A Pages site configured with `localhost` would make each visitor's browser look for an API on that visitor's own computer.
+Set the Worker’s `APP_URL` and `CORS_ORIGINS` to the exact Pages origin. For `pages.dev` and `workers.dev` cross-origin requests, configure the Worker session cookie with `SameSite=None` and `Secure=true`. The browser API client sends credentials for cookie-based sessions.
 
-The backend uses a SQLite file, so its host must provide persistent storage for that file and run a single API instance. Deploying this frontend does not deploy or include the API or its database.
+Deploying this frontend does not deploy the Worker or migrate data; see the backend README for those steps.
 
 ## Accounts
 
-Signup requires only a username and password. Email is optional; accounts without an email address cannot use email-based password recovery.
+Signup requires only a username and password. Email is optional; users without an email cannot use email recovery. Existing Argon2 accounts must choose a new password when prompted after a preserved session, use email recovery, or be reset manually by the administrator during migration.
