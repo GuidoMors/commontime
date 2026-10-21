@@ -29,10 +29,10 @@ Connect this repository to Cloudflare Pages and configure:
 - **Root directory:** repository root
 - **Environment variable:** `VITE_API_BASE_URL` = the deployed Worker URL, such as `https://availability-planner-api.<account>.workers.dev`
 
-Set the Worker’s `APP_URL` and `CORS_ORIGINS` to the exact Pages origin. For `pages.dev` and `workers.dev` cross-origin requests, configure the Worker session cookie with `SameSite=None` and `Secure=true`. The browser API client sends credentials for cookie-based sessions.
+Set the Worker’s `CORS_ORIGINS` to the exact Pages origin. For `pages.dev` and `workers.dev` cross-origin requests, configure the Worker session cookie with `SameSite=None` and `Secure=true`. The browser API client sends credentials for cookie-based sessions.
 
 Deploying this frontend does not deploy the Worker or migrate data; see the backend README for those steps.
 
 ## Accounts
 
-Signup requires only a username and password. Email is optional; users without an email cannot use email recovery. Existing Argon2 accounts must choose a new password when prompted after a preserved session, use email recovery, or be reset manually by the administrator during migration.
+Signup requires only a username and password. A one-time recovery key is displayed after signup; save it securely because it is needed to reset a forgotten password and cannot be retrieved later. Existing accounts need a recovery key supplied by the administrator; existing Argon2 accounts can also change to a Worker-compatible password from a preserved session.
